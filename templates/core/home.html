@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+{%load static tz%}
+{% block 'body' %}
+<h2>..{{tz.tzname}}</h2>
+welcome home , {{user}}
+<hr/>
+<p>your blogs</p>
+<div id="blogs"></div>
+
+<hr/>
+<h1>myvar==> {{mytest}}</h1>
+
+{% endblock 'body' %}
+{% block 'script' %}
+<script>
+$(document).ready(function(e){
+    
+    $.ajax({
+
+        url:"/api/v1/blog/",
+        headers:{
+            Accept:"application/json",
+        },
+        method:"GET",
+        success:function(d,s,xhr){
+            console.log(`..${xhr.status},,${s}`)
+            {% comment %} console.log(d['blogs']) {% endcomment %}
+            llist=d['blogs']
+            for (var i=0;i<llist.length;i++){
+                
+                $(`#blogs`).append(
+                    `<div class="card" id="c${i}" style="width: 18rem;">
+  <img src="{%static 'img/m1.png'%}" class="card-img-top" alt="c${i}">
+  <div class="card-body">${llist[i]['title']}
+    <p class="card-text">${llist[i]['body']}</p>
+  </div>
+</div>`
+                )
+
+            }            
+        },
+        error:function(xhr,s,err){
+            console.log(`..${xhr.status},,${err}`)
+        }
+
+    })
+})
+</script>
+{% endblock 'script' %}
